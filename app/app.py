@@ -1,6 +1,7 @@
 import sys
 import os
 import streamlit as st
+import yaml
 
 # add the code folder to the path so we can import from it
 BASE_DIR = os.path.dirname(__file__)            # app/
@@ -80,7 +81,7 @@ elif page == "Relevant Documents":
         combined = sorted(zip(docs, dists), key=lambda x: x[1])
 
         for idx, (doc, dist) in enumerate(combined, 1):
-            st.markdown(f"**{idx}. Cosine distance: {dist:.f}**")
+            st.markdown(f"**{idx}. Cosine distance: {dist:.3f}**")
             st.write(doc)
             st.markdown("---")
 
@@ -92,5 +93,8 @@ elif page == "RAG Prompt":
     "answer behaves for the given query. In a production environment, exposing the system "
     "prompt would pose a security and integrity risk and should be strictly avoided."
 )
-    st.markdown(rag_assistant_prompt)
+    yaml_str = yaml.dump(rag_assistant_prompt, sort_keys=False, allow_unicode=True)
+
+    st.subheader("RAG Prompt")
+    st.code(yaml_str, language="yaml")
 
