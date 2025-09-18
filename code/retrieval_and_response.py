@@ -81,35 +81,22 @@ def respond_to_query(
         query, n_results=n_results, threshold=threshold
     )
     
-
-    # logger.info("-" * 100)
-    # logger.info("Relevant documents: \n")
-    # for doc in relevant_files['documents']:
-    #     logger.info(doc)
-    #     logger.info("-" * 100)
-    # logger.info("")
-
-    # logger.info("User's question:")
-    # logger.info(query)
-    # logger.info("")
-    # logger.info("-" * 100)
-    # logger.info("")
-    input_data = (
-        f"Relevant documents:\n\n{relevant_files['documents']}\n\nUser's question:\n\n{query}"
-    )
+    if not relevant_files['distances']:
+        input_data = (
+            "No relevant documents found for this query.\n\n"
+            f"User's question:\n\n{query}"
+        )
+    else:
+        # Otherwise, include the retrieved documents
+        input_data = (
+            f"Relevant documents:\n\n{relevant_files['documents']}\n\n"
+            f"User's question:\n\n{query}"
+        )
 
     rag_assistant_prompt = build_prompt_from_config(
         prompt_config, input_data=input_data
     )
 
-    logger.info('Relevant documents and their cosine distances:')
-    for i in range(n_results):
-        logger.info(f"Cosine distance: {relevant_files['distances'][i]:.3f}" )
-        logger.info(f"Article: {relevant_files['documents'][i]}")
-        logger.info("")
-
-    #logger.info(f"RAG assistant prompt: {rag_assistant_prompt}")
-    #logger.info("")
 
     llm = ChatGroq(
     model="llama-3.1-8b-instant",
